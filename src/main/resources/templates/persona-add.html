@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new Persona</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+</head>
+<body>
+<div class="modal position-static d-block bg-light py-5" tabindex="-1" role="dialog">
+    <div class="modal-dialog w-auto m-auto" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pt-3 pb-2 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-4">Add new user</h1>
+                <a th:href="@{/admin/personas}">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </a>
+            </div>
+            <div class="modal-body p-5 pt-3 pb-0">
+                <form th:action="@{/admin/new-persona}" method="post" th:object="${persona}">
+                    <div class="form-floating mb-3">
+                        <input type="text" name="name" th:field="*{name}" class="form-control rounded-3"
+                               placeholder="Name" required max="255">
+                        <label>Name</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid information.
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="lastName" th:field="*{lastName}" class="form-control rounded-3"
+                               placeholder="Lastname" required  max="255">
+                        <label>Last name</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid information.
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" th:field="*{email}" class="form-control rounded-3"
+                               placeholder="name@example.com" required  max="255">
+                        <label>Email address</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid information.
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" name="password" th:field="*{password}" class="form-control rounded-3"
+                               placeholder="Password" required  max="255">
+                        <label>Password</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid information.
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" aria-label="Floating label select example"
+                                name="role">
+                            <div th:each="role : ${roles}">
+                                <option th:text="${role}"></option>
+                            </div>
+                        </select>
+                        <label>Choose Role</label>
+                    </div>
+                    <button class="w-100 mb-5 btn btn-lg rounded-3 btn-primary" type="submit">Create User</button>
+                    <div th:if="${param.exist}" class="text-center">
+                        <small class="alert alert-danger mt-2 p-1 m-auto">User with such email already exists!</small>
+                    </div>
+                    <div th:if="${param.invalidmail}" class="text-center pb-2">
+                        <small class="alert alert-danger p-1 m-auto">This mail domain is not supported!</small>
+                    </div>
+                    <div th:if="${param.short}" class="text-center pb-2">
+                        <small class="alert alert-danger p-1 m-auto">The password should be at least 8 symbols!</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="b-example-divider" style="padding-bottom: 160px;"></div>
+<footer th:insert="~{login::foot-fixed}"></footer>
+</body>
+</html>

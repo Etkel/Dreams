@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Category management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+            crossorigin="anonymous"></script>
+</head>
+<body class="bg-light">
+
+<!--*****************************************************-->
+<div class="b-example-divider"></div>
+<div class="modal modal-signin position-static d-block py-5" tabindex="-1" role="dialog">
+    <div class="modal-dialog w-auto m-auto" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pt-4 pb-2 border-bottom-1">
+                <h1 class="fw-bold mb-0 fs-4">Category management</h1>
+                <a th:href="@{/}">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </a>
+            </div>
+            <div class="modal-body pb-4 p-5 pt-3 pb-0">
+                <form id="create" th:action="@{/admin/category-add}" th:object="${category}" method="post"
+                      enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="text" name="name" th:field="*{nameCategory}" class="form-control rounded-3"
+                               id="floatingInput"
+                               maxlength="255"
+                               placeholder="category" required>
+                        <label for="floatingInput">Category title</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid information.
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+            <textarea name="description" maxlength="650" class="form-control rounded-3" id="desc" placeholder="Description"
+                      required="" style="height: 150px; overflow-y: auto;" th:field="*{description}">
+                            </textarea>
+                        <label for="desc">Description</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid information.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Input image</label>
+                        <input class="form-control" type="file" accept="image/*" id="formFile" name="multipartFile">
+                    </div>
+                    <button class="w-100 mb-3 btn btn-lg rounded-3 btn-primary" type="submit" form="create"
+                            onclick="submitForm()">Create
+                    </button>
+                    <div class="card-footer text-center">
+                        <select class="form-select mb-3" size="4" id="categorySelect">
+                            <div th:each="category : ${categories}">
+                                <option th:value="${category.id}" th:text="${category.nameCategory}"></option>
+                            </div>
+                        </select>
+                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-secondary" onclick="deleteCategory()"
+                                form="categorySelect">Delete
+                        </button>
+                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" onclick="update()"
+                                form="categorySelect">Update
+                        </button>
+                        </select>
+                        <div th:if="${param.error}">
+                            <small class="alert alert-danger p-1 m-auto">Category already exists</small>
+                        </div>
+                        <div th:if="${param.success}">
+                            <small class="alert alert-success p-1 m-auto">Success</small>
+                        </div>
+                        <div th:if="${param.miss}">
+                            <small class="alert alert-danger p-1 m-auto">File not added</small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="b-example-divider"></div>
+<div class="b-example-divider"></div>
+<div class="b-example-divider" style="padding-bottom: 160px;"></div>
+<footer th:insert="~{login::foot-fixed}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"></script>
+
+<script>
+    function deleteCategory() {
+        var categoryId = document.getElementById("categorySelect").value;
+        $.ajax({
+            url: '/admin/delete-category/' + categoryId,
+            type: 'POST',
+            success: function () {
+                location.reload();
+            }
+        });
+    }
+</script>
+<script>
+    function submitForm() {
+        document.getElementById("create").submit();
+        location.reload();
+    }
+</script>
+<script>
+    function update() {
+        var categoryId = document.getElementById("categorySelect").value;
+        $.ajax({
+            url: '/admin/update-category/' + categoryId,
+            type: 'GET',
+            success: function () {
+                window.location.href = '/admin/update-category/' + categoryId;
+            }
+        });
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

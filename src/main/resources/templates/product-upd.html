@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Product management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+            integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+            crossorigin="anonymous"></script>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+</head>
+<body class="bg-light">
+
+<!--*****************************************************-->
+<div class="b-example-divider"></div>
+<div class="modal modal-signin position-static d-block py-5" tabindex="-1" role="dialog">
+    <div class="modal-dialog w-auto m-auto" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pt-4 pb-2 border-bottom-1">
+                <h1 class="fw-bold mb-0 fs-4">Product management</h1>
+                <a th:href="@{/admin/product-add}">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </a>
+            </div>
+            <div class="modal-body p-5 pb-4 pt-3 pb-0">
+                <form id="update" th:action="@{/admin/update-product/{id}(id=${product.id})}" th:object="${product}"
+                      method="post"
+                      enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="text" name="name" th:field="*{name}" class="form-control rounded-3"
+                               id="floatingInput"
+                               maxlength="255"
+                               placeholder="category" required>
+                        <label for="floatingInput">Product title</label>
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{categories}">
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid information.
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" step="0.01" min="0.01" name="price" th:field="*{price}"
+                               class="form-control rounded-3" id="price"
+                               placeholder="price">
+                        <label for="price">Price 00.00$</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                            <textarea name="description" class="form-control rounded-3" id="desc"
+                                      placeholder="Description"
+                                      maxlength="1000"
+                                      style="height: 150px; overflow-y: auto;" th:field="*{description}">
+                            </textarea>
+                        <label for="desc">Description</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <select class="form-select" id="group" aria-label="Floating label select example"
+                                name="categoryId">
+                            <option value=""></option>
+                            <div th:each="category : ${categories}">
+                                <option th:value="${category.id}" th:text="${category.nameCategory}"></option>
+                            </div>
+                        </select>
+                        <label for="group">Add Category</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Input image</label>
+                        <input class="form-control" type="file" accept="image/*" id="formFile" name="multipartFile">
+                    </div>
+                    Delete category
+                    <div class="card-footer text-center">
+                        <select class="form-select mb-3" size="4" name="categoryDelId">
+                            <div th:each="catFromProd : ${categoriesFromProduct}">
+                                <option th:value="${catFromProd.id}" th:text="${catFromProd.nameCategory}"></option>
+                            </div>
+                        </select>
+
+                        <button class="w-100 mb-3 btn btn-lg rounded-3 btn-primary" type="submit" form="update">Update
+                        </button>
+
+                        <div th:if="${param.error}">
+                            <small class="alert alert-danger p-1 m-auto">Incorrect values</small>
+                        </div>
+                        <div th:if="${param.success}">
+                            <small class="alert alert-success p-1 m-auto">Success</small>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="b-example-divider"></div>
+<div class="b-example-divider"></div>
+<div class="b-example-divider" style="padding-bottom: 160px;"></div>
+<footer th:insert="~{login::foot-fixed}"></footer>
+
+</body>
+</html>

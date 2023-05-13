@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dream shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+            crossorigin="anonymous"></script>
+</head>
+<body class="vh-100">
+<!-- Navigation-->
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" th:fragment="nav">
+    <div class="container px-4 px-lg-2">
+        <a class="navbar-brand" th:href="@{/}" style="color: #5625a4">Dream Shop</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/about}">About</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/category/allproducts}">All Products</a></li>
+                        <li>
+                            <hr class="dropdown-divider"/>
+                        </li>
+                        <div th:each="cat: ${categoryNav}">
+                            <li><a class="dropdown-item"
+                                   th:href="@{/category/{id}(id = ${cat.nameCategory})}"
+                                   th:text="${cat.nameCategory}">...</a></li>
+                        </div>
+                    </ul>
+                </li>
+
+                <form class="d-flex" role="search" method="post" th:action="@{/search}">
+                    <input class="form-control me-2" type="search" name="categoryName"
+                           placeholder="Search product" aria-label="Search">
+                    <button class="btn btn-outline-dark" type="submit">Search</button>
+                </form>
+
+            </ul>
+            <form class="d-flex">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <div sec:authorize="hasAuthority('ADMIN')">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownAdm" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">Admin
+                                <span class="badge bg-dark text-white ms- rounded-pill"
+                                      th:text="${uncheckedOrders}">0</span>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" th:href="@{/admin/personas}">User management</a></li>
+                                <li>
+                                    <hr class="dropdown-divider"/>
+                                </li>
+                                <li><a class="dropdown-item" th:href="@{/admin/product-add}">Product Management</a></li>
+                                <li>
+                                    <hr class="dropdown-divider"/>
+                                </li>
+                                <li><a class="dropdown-item" th:href="@{/admin/category-add}">Category Management</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider"/>
+                                </li>
+                                <li><a class="dropdown-item" th:href="@{/admin/orders}">Orders
+                                    <span class="badge bg-dark text-white ms- rounded-pill"
+                                          th:text="${uncheckedOrders}">0</span></a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider"/>
+                                </li>
+                                <li><a class="dropdown-item" th:href="@{/user/profile}">Profile</a></li>
+                                <li>
+                                    <hr class="dropdown-divider"/>
+                                </li>
+                                <li><a class="dropdown-item" th:href="@{/user/orders}">Your Orders</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </div>
+                    <div sec:authorize="isAnonymous()">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/login}">Log in</a></li>
+                    </div>
+                    <div sec:authorize="isAnonymous()">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/registration}">Sign up</a></li>
+                    </div>
+                    <div sec:authorize="hasAuthority('USER')">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="Settings" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">Settings</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li class="nav-item"><a class="nav-link" th:href="@{/user/profile}">Profile</a></li>
+                                <li class="nav-item"><a class="nav-link" th:href="@{/user/orders}">Orders</a></li>
+                            </ul>
+                        </li>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/logout}">Log out</a></li>
+                    </div>
+                </ul>
+            </form>
+            <form class="d-flex" method="get" th:action="@{/user/cart}">
+                <button class="btn btn-outline-dark" type="submit">
+                    <i class="bi-cart-fill me-1"></i>
+                    Cart
+                    <span class="badge bg-dark text-white ms-1 rounded-pill" th:text="${cartSize}">0</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Header-->
+<header class="bg-dark py-5" th:fragment="header">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder" style="color: #6f42c1">Dream Shop</h1>
+            <p class="lead fw-normal mb-0" style="color: #bfd1ec">Catch your dreams on the fly at Dream shop.</p>
+        </div>
+    </div>
+</header>
+
+<div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-theme="dark">
+    <div class="carousel-indicators">
+        <button type="button" th:each="category, i : ${categoryNav}"
+                data-bs-target="#carouselExample"
+                th:data-bs-slide-to="${i.index}"
+                th:classappend="${i.first} ? 'active' : ''"
+                th:attr="aria-current=${i.first} ? 'true' : '', aria-label='Slide ' + ${i.index + 1}">
+        </button>
+    </div>
+    <div class="carousel-inner">
+        <div th:each="category, index : ${categoryNav}"
+             class="carousel-item"
+             th:classappend="${index.first} ? 'active'">
+            <section>
+                <div class="container px-4 px-lg-5 my-5">
+                    <div class="row gx-4 gx-lg-5 align-items-center m-auto" style="max-width: 840px;">
+                        <div class="col-md-6">
+                            <img class="card-img-top mb-5 mb-md-0" th:src="${category.imageNameCategory}" alt="..."
+                                 style="max-height:540px;width:100%;object-fit: contain; margin: auto">
+                        </div>
+                        <div class="col-md-6 " style="min-height: 540px;">
+                            <h1 class="display-5 fw-bolder" th:text="${category.nameCategory}">Shop item template</h1>
+                            <p class="lead" th:text="${category.description}"></p>
+                            <form th:action="@{/category/{id}(id = ${category.nameCategory})}" method="get">
+                                <div class="d-flex">
+                                    <button type="submit" class="btn btn-outline-dark flex-shrink-0 w-100">
+                                        <i class="bi-cart-fill me-1"></i>
+                                        View all
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button"
+            data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button"
+            data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<section class="py-5 bg-light" th:if="${mvps.size() != 0}">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="fw-bolder mb-4">Popular Items</h2>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <div class="col mb-5" th:each="mvp : ${mvps}">
+                <div class="card h-100">
+                    <!-- Product image-->
+                    <img class="card-img-top" th:src="${mvp.img}" alt="..."
+                         style="max-height:200px;width:100%;object-fit: contain;"/>
+                    <!-- Product details-->
+                    <div class="card-body p-4">
+                        <div class="text-center">
+                            <!-- Product name-->
+                            <h5 class="fw-bolder" th:text="${mvp.name}"
+                                style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                Popular Item</h5>
+                            <!-- Product reviews-->
+                            <div class="d-flex justify-content-center small text-warning mb-2">
+                            </div>
+                            <!-- Product price-->
+                            [[${mvp.price}]]$
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+                    <div class="card-footer p-2 pb-3 border-top-0 bg-transparent">
+                        <div class="text-center">
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{/product/{id}(id = ${mvp.id})}">
+                                Details</a>
+                            <form style="display: inline-block;">
+                                <a class="btn btn-outline-dark mt-auto text-decoration-none" id="add-to-cart"
+                                   th:classappend="${principal == null ? 'disabled' : ''}"
+                                   th:onclick="'addProduct(' + ${mvp.id} + ')'">Add to cart</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Footer-->
+<footer class="fixed bg-dark color p-3" th:fragment="foot">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 h-100 text-center text-lg-start my-auto">
+                <ul class="list-inline mb-2 text-success">
+                    <li class="list-inline-item"><a href="#!">About</a></li>
+                    <li class="list-inline-item">⋅</li>
+                    <li class="list-inline-item"><a href="#!">Contact</a></li>
+                    <li class="list-inline-item">⋅</li>
+                    <li class="list-inline-item"><a href="#!">Terms of Use</a></li>
+                    <li class="list-inline-item">⋅</li>
+                    <li class="list-inline-item"><a href="#!">Privacy Policy</a></li>
+                </ul>
+                <p class="text-light small mb-4 mb-lg-0">&copy; Dream Website 2023. All Rights Reserved.</p>
+            </div>
+            <div class="col-lg-6 h-100 text-center text-lg-end my-auto ">
+                <ul class="list-inline mb-0 ">
+                    <li class="list-inline-item me-4">
+                        <a href="#!"><i class="bi-facebook fs-3"></i></a>
+                    </li>
+                    <li class="list-inline-item me-4">
+                        <a href="#!"><i class="bi-twitter fs-3"></i></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="#!"><i class="bi-instagram fs-3"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function addProduct(productIdStr) {
+        var productId = parseInt(productIdStr);
+        $.ajax({
+            url: '/user/cart/' + productId,
+            type: 'POST',
+            success: function () {
+                location.reload();
+            }
+        });
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>
