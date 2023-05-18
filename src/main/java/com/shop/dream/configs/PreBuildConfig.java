@@ -29,7 +29,7 @@ public class PreBuildConfig {
                     .name("admin")
                     .lastName("admin")
                     .email("admin@gmail.com")
-                    .password(passwordEncoder.encode("MagicPower321"))
+                    .password(passwordEncoder.encode("1234"))
                     .role(Role.ADMIN)
                     .build();
             personaRepository.save(admin);
