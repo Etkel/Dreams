@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.Principal;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -21,18 +23,23 @@ public class AuthRegController {
     }
 
     @PostMapping("/registration")
-    public String savePersona(Model model, PersonaDTO dto) {
+    public String savePersona(PersonaDTO dto, String rePassword) {
+        if (!personaService.mailCheck(dto.getEmail())) {
+            return "redirect:/registration?invalidmail";
+        }
         if(personaService.existsByEmail(dto.getEmail())) {
             return "redirect:/registration?exist";
         }
+        if (!personaService.passCheck(dto.getPassword())) {
+            return "redirect:/registration?short";
+        }
+        if (!dto.getPassword().equals(rePassword)) {
+            return "redirect:/registration?wrong";
+        }
         if (personaService.save(dto)) {
             return "redirect:/login";
-        } else {
-            model.addAttribute("persona", dto);
         }
         return "registration";
     }
-
-
 
 }

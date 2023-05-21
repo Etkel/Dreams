@@ -11,11 +11,9 @@ import java.util.Objects;
 
 @Entity
 @Builder
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Table(name = "CartItems")
 public class CartItem {
     @Id
@@ -32,7 +30,6 @@ public class CartItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-
     public static CartItemDTO cartItemToDTO(CartItem cartItem) {
         return CartItemDTO.builder()
                 .id(cartItem.id)
@@ -40,18 +37,5 @@ public class CartItem {
                 .amount(cartItem.amount)
                 .cart(cartItem.cart)
                 .build();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        CartItem cartItem = (CartItem) o;
-        return id != null && Objects.equals(id, cartItem.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

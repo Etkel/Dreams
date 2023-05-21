@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,9 @@ import static com.shop.dream.models.Persona.personaToDTO;
 @Service
 @RequiredArgsConstructor
 public class PersonaServiceImpl implements PersonaService {
+    private static final HashSet<String> ALLOWED_DOMAINS = new HashSet<>(Arrays.asList("gmail.com", "yahoo.com",
+            "outlook.com", "hotmail.com", "aol.com", "icloud.com", "mail.com", "protonmail.com", "gmx.com", "ukr.net",
+            "mail.ua", "i.ua", "meta.ua", "ex.ua"));
     private final PersonaRepository personaRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -132,12 +137,10 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public boolean mailCheck(String email) {
-        List<String> allowedDomains = List.of("gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
-                "aol.com", "icloud.com", "mail.com", "protonmail.com", "gmx.com", "ukr.net", "mail.ua",
-                "i.ua", "meta.ua", "ex.ua");
+        System.out.println(ALLOWED_DOMAINS);
         String[] parts = email.split("@");
         String domain = parts[1];
-        for (String allowedDomain : allowedDomains) {
+        for (String allowedDomain : ALLOWED_DOMAINS) {
             if (domain.equals(allowedDomain)) {
                 return true;
             }
@@ -195,8 +198,7 @@ public class PersonaServiceImpl implements PersonaService {
     @Override
     @Transactional(readOnly = true)
     public Persona findByEmailEssence(String email) {
-        return personaRepository.existsByEmail(email)
-                ? personaRepository.findByEmail(email) : null;
+        return personaRepository.findByEmail(email);
     }
 
     @Override

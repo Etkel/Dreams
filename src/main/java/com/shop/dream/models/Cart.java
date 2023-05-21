@@ -10,11 +10,9 @@ import java.util.Objects;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "Carts")
 public class Cart {
     @Id
@@ -32,18 +30,5 @@ public class Cart {
                 .id(cart.id)
                 .persona(cart.persona)
                 .build();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Cart cart = (Cart) o;
-        return id != null && Objects.equals(id, cart.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

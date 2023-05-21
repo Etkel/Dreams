@@ -17,10 +17,11 @@ import static com.shop.dream.configs.GoogleCloudConfig.uploadFile;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping("admin/category-add")
+    @GetMapping("/category-add")
     public String categoryForm(Model model) {
         List<CategoryDTO> categoryDTOS = categoryService.findAll();
         model.addAttribute("categories", categoryDTOS);
@@ -28,7 +29,7 @@ public class CategoryController {
         return "category-add";
     }
 
-    @PostMapping("admin/category-add")
+    @PostMapping("/category-add")
     public String saveCategory(CategoryDTO dto, MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
             return "redirect:/admin/category-add?miss";
@@ -48,19 +49,19 @@ public class CategoryController {
         return "category-add";
     }
 
-    @PostMapping("admin/delete-category/{categoryId}")
+    @PostMapping("/delete-category/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategoryById(categoryId);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("admin/update-category/{categoryId}")
+    @GetMapping("/update-category/{categoryId}")
     public String updateCategory(@PathVariable Long categoryId, Model model) {
         model.addAttribute("category", categoryService.findById(categoryId));
         return "category-upd";
     }
 
-    @PostMapping("admin/update-category/{categoryId}")
+    @PostMapping("/update-category/{categoryId}")
     public String updateCategoryDo(@PathVariable Long categoryId,
                                    CategoryDTO categoryDTO,
                                    @RequestParam(required = false) MultipartFile multipartFile) {

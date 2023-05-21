@@ -146,9 +146,4 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Category findByNameEssence(String name) {
-        return categoryRepository.findByNameCategory(name);
-    }
-
 }

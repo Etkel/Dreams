@@ -1,5 +1,6 @@
 package com.shop.dream.components;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -9,17 +10,19 @@ import java.util.Properties;
 
 @Component
 public class EmailSender {
-    private String host = "smtp.gmail.com";
-    private final String username = "ds.as.dream.shop@gmail.com";
-    private final String password = "-----------";
-    private final int port = 587;
+    private static final String HOST = "smtp.gmail.com";
+    @Value("${email}")
+    private String username;
+    @Value("${email.password}")
+    private String password;
+    private static final int PORT = 587;
 
     private Properties properties(){
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", port);
+        props.put("mail.smtp.host", HOST);
+        props.put("mail.smtp.port", PORT);
         return props;
     }
 

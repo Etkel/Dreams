@@ -18,13 +18,14 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class CartController {
     private final CartItemsService cartItemsService;
     private final CategoryService categoryService;
     private final PersonaService personaService;
     private final OrderService orderService;
 
-    @PostMapping("/user/cart/{productId}")
+    @PostMapping("/cart/{productId}")
     public ResponseEntity<String> addItemToCart(@PathVariable Long productId, Principal principal,
                                                 @RequestParam(required = false, defaultValue = "1", name = "amount")
                                                 Integer amount) {
@@ -32,7 +33,7 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/user/cart")
+    @GetMapping("/cart")
     public String theCart(Model model, Principal principal) {
         model.addAttribute("cart", personaService.findByEmail(principal.getName()).getCart());
 //Navigation
@@ -43,7 +44,7 @@ public class CartController {
         return "cart";
     }
 
-    @PostMapping("/user/cart-upd")
+    @PostMapping("/cart-upd")
     public String update(@ModelAttribute("cart") CartDTO dto,
                          @ModelAttribute("total") BigDecimal total) {
         if (dto.getCartItems() == null) {
@@ -53,7 +54,7 @@ public class CartController {
         return "redirect:/user/order?total=" + total;
     }
 
-    @GetMapping("/user/cart/delete/{itemId}")
+    @GetMapping("/cart/delete/{itemId}")
     public String deleteCartItem(@PathVariable Long itemId) {
         cartItemsService.delete(itemId);
         return "redirect:/user/cart";

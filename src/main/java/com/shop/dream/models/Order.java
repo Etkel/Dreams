@@ -16,12 +16,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
 @Table(name = "Orders")
 public class Order {
     @Id
@@ -47,9 +45,6 @@ public class Order {
     @ToString.Exclude
     private List<CartItem> cartItems;
 
-
-
-
     public static OrderDTO orderToDTO(Order order) {
         return OrderDTO.builder()
                 .id(order.id)
@@ -62,18 +57,5 @@ public class Order {
                 .updated(order.updated)
                 .cartItems(order.cartItems)
                 .build();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Order order = (Order) o;
-        return id != null && Objects.equals(id, order.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
+import static com.shop.dream.contollers.MainController.getPageCount;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -82,7 +84,8 @@ public class OrderController {
                 PageRequest.of(page, COUNT_PAGE_ORDER, Sort.Direction.DESC, "id"));
         model.addAttribute("orders", orders);
         model.addAttribute("currentPage", page);
-        model.addAttribute("allPages", getPageCountOrders(principal.getName()));
+        model.addAttribute("allPages", getPageCount(orderService.ordersCountByMail(principal.getName()),
+                COUNT_PAGE_ORDER));
         //Navigation
         List<CategoryDTO> categoryDTOS = categoryService.findAll();
         model.addAttribute("categoryNav", categoryDTOS);
@@ -99,7 +102,7 @@ public class OrderController {
         model.addAttribute("statuses", OrderStatus.values());
         model.addAttribute("orders", orders);
         model.addAttribute("currentPage", page);
-        model.addAttribute("allPages", getPageCountOrders());
+        model.addAttribute("allPages", getPageCount(orderService.count(), COUNT_PAGE_ORDER));
         //Navigation
         List<CategoryDTO> categoryDTOS = categoryService.findAll();
         model.addAttribute("categoryNav", categoryDTOS);
@@ -114,17 +117,5 @@ public class OrderController {
                                                 OrderStatus status) {
         orderService.updateOrderStatus(orderId, status);
         return ResponseEntity.ok().build();
-    }
-
-    private long getPageCountOrders(String email) {
-        long totalCount = orderService.ordersCountByMail(email);
-        var pageCount = (totalCount / COUNT_PAGE_ORDER) + ((totalCount % COUNT_PAGE_ORDER > 0) ? 1 : 0);
-        return pageCount == 0 ? 1 : pageCount;
-    }
-
-    private long getPageCountOrders() {
-        long totalCount = orderService.Count();
-        var pageCount = (totalCount / COUNT_PAGE_ORDER) + ((totalCount % COUNT_PAGE_ORDER > 0) ? 1 : 0);
-        return pageCount == 0 ? 1 : pageCount;
     }
 }

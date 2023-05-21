@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByName(String name);
     @Query("SELECT p.categories FROM Product p WHERE p.id=:productId")
-    List<Category> findCategoriesFromProduct(@Param("productId") Long productId);
+    List<Category> findCategoriesFromProduct(@Param("productId") Long id);
     @Query("SELECT p FROM Product p WHERE p.name LIKE CONCAT('%', :name, '%')")
     List<Product> searchProductByName(String name, Pageable pageable);
     @Query("SELECT COUNT (p) FROM Product p WHERE p.name LIKE CONCAT('%', :name, '%')")

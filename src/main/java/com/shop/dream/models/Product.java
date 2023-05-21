@@ -10,11 +10,9 @@ import java.util.List;
 
 @Entity
 @Builder
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Table(name = "Products")
 public class Product {
     @Id
@@ -56,5 +54,4 @@ public class Product {
                 .img(product.img)
                 .build();
     }
-
 }

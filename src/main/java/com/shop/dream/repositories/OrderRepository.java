@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.persona.email=:email")
-    List<Order> findOrdersByEmail(@Param(value = "email")String email, Pageable pageable);
+    List<Order> findOrdersByEmail(String email, Pageable pageable);
     @Query("SELECT COUNT (o) FROM Order o WHERE o.persona.email=:email")
-    Long ordersCountByMail(@Param(value = "email")String email);
+    Long ordersCountByMail(String email);
     Long countOrdersByStatus(OrderStatus status);
 }

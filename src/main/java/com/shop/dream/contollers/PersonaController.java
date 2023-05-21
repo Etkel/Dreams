@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+import static com.shop.dream.contollers.MainController.getPageCount;
+
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class PersonaController {
     private final PersonaService personaService;
     private final CategoryService categoryService;
@@ -28,7 +31,7 @@ public class PersonaController {
     private static final Integer COUNT_PAGE_ORDER = 12;
     private final EmailSender emailSender;
 
-    @GetMapping("/admin/personas")
+    @GetMapping("/personas")
     public String personaList(Model model, Principal principal,
                               @RequestParam(required = false, defaultValue = "0") Integer page,
                               @RequestParam(value = "sortField", defaultValue = "id") String sortField,
@@ -37,48 +40,45 @@ public class PersonaController {
         if (emailSearch != null) {
             List<PersonaDTO> personaDTOS = personaService.searchByEmailSomething(emailSearch,
                     PageRequest.of(page, COUNT_PAGE_PERSONAS, Sort.Direction.valueOf(sortDir), sortField));
-            model.addAttribute("currentPage", page);
-            model.addAttribute("personaList", personaDTOS);
-            model.addAttribute("allPages", getPageCountSearch(emailSearch));
-            model.addAttribute("sortField", sortField);
-            model.addAttribute("sortDir", sortDir);
-            model.addAttribute("emailSearch", emailSearch);
-            model.addAttribute("reverseSort", sortDir.equals("ASC") ? "DESC" : "ASC");
 
+            model.addAttribute("personaList", personaDTOS);
+            model.addAttribute("allPages", getPageCount(personaService.countByEmailSearch(emailSearch),
+                    COUNT_PAGE_PERSONAS));
+            model.addAttribute("emailSearch", emailSearch);
         } else {
             List<PersonaDTO> personaDTOs = personaService.findAll(PageRequest.of(page, COUNT_PAGE_PERSONAS,
                     Sort.Direction.valueOf(sortDir), sortField));
-            model.addAttribute("currentPage", page);
             model.addAttribute("personaList", personaDTOs);
-            model.addAttribute("allPages", getPageCountPersona());
-            model.addAttribute("sortField", sortField);
-            model.addAttribute("sortDir", sortDir);
-            model.addAttribute("reverseSort", sortDir.equals("ASC") ? "DESC" : "ASC");
+            model.addAttribute("allPages", getPageCount(personaService.count(), COUNT_PAGE_PERSONAS));
         }
-//Navigation
+        //Navigation
         List<CategoryDTO> categoryDTOS = categoryService.findAll();
         model.addAttribute("categoryNav", categoryDTOS);
         model.addAttribute("cartSize", personaService.findCartSizeByEmail(principal.getName()));
         model.addAttribute("uncheckedOrders", orderService.countUncheckedOrders());
+        //Pagination
+        model.addAttribute("currentPage", page);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSort", sortDir.equals("ASC") ? "DESC" : "ASC");
         return "personas";
     }
 
-    @PostMapping("/admin/general-email")
+    @PostMapping("/general-email")
     public String generalEmailSend(String body, String topic, Principal principal) {
         emailSender.sendEmail(personaService.allEmailsExceptCurrent(principal), topic, body);
         return "redirect:/admin/personas?mails";
 
     }
 
-
-    @GetMapping("/admin/new-persona")
+    @GetMapping("/new-persona")
     public String personaForm(Model model) {
         model.addAttribute("persona", new PersonaDTO());
         model.addAttribute("roles", Role.values());
         return "persona-add";
     }
 
-    @PostMapping("/admin/new-persona")
+    @PostMapping("/new-persona")
     public String addPersona(@ModelAttribute(name = "persona") PersonaDTO personaDTO) {
         if (!personaService.mailCheck(personaDTO.getEmail())) {
             return "redirect:/admin/new-persona?invalidmail";
@@ -93,7 +93,7 @@ public class PersonaController {
         return "redirect:/admin/personas";
     }
 
-    @GetMapping("/admin/personas/ban/{id}")
+    @GetMapping("/personas/ban/{id}")
     public String banUnban(@PathVariable Long id) {
         PersonaDTO persona = personaService.findById(id);
         if (persona.getRole() == Role.ADMIN) {
@@ -104,7 +104,7 @@ public class PersonaController {
         return "redirect:/admin/personas";
     }
 
-    @GetMapping("/admin/personas/delete/{id}")
+    @GetMapping("/personas/delete/{id}")
     public String delete(@PathVariable Long id) {
         Role role = personaService.findById(id).getRole();
         if (role == Role.ADMIN) {
@@ -116,7 +116,7 @@ public class PersonaController {
         return "redirect:/admin/personas";
     }
 
-    @GetMapping("/admin/personas/orders/{email}")
+    @GetMapping("/personas/orders/{email}")
     public String orders(Model model,
                          @PathVariable("email") String email, Principal principal,
                          @RequestParam(required = false, defaultValue = "0") Integer page) {
@@ -124,30 +124,13 @@ public class PersonaController {
                 PageRequest.of(page, COUNT_PAGE_ORDER, Sort.Direction.DESC, "id"));
         model.addAttribute("orders", orders);
         model.addAttribute("currentPage", page);
-        model.addAttribute("allPages", getPageCountOrders(email));
+        model.addAttribute("allPages", getPageCount(orderService.ordersCountByMail(email),
+                COUNT_PAGE_ORDER));
         //Navigation
         List<CategoryDTO> categoryDTOS = categoryService.findAll();
         model.addAttribute("categoryNav", categoryDTOS);
         model.addAttribute("cartSize", personaService.findCartSizeByEmail(principal.getName()));
         model.addAttribute("uncheckedOrders", orderService.countUncheckedOrders());
         return "order-list";
-    }
-
-    private long getPageCountPersona() {
-        long totalCount = personaService.count();
-        var pageCount = (totalCount / COUNT_PAGE_PERSONAS) + ((totalCount % COUNT_PAGE_PERSONAS > 0) ? 1 : 0);
-        return pageCount == 0 ? 1 : pageCount;
-    }
-
-    private long getPageCountSearch(String email) {
-        long totalCount = personaService.countByEmailSearch(email);
-        var pageCount = (totalCount / COUNT_PAGE_PERSONAS) + ((totalCount % COUNT_PAGE_PERSONAS > 0) ? 1 : 0);
-        return pageCount == 0 ? 1 : pageCount;
-    }
-
-    private long getPageCountOrders(String email) {
-        long totalCount = orderService.ordersCountByMail(email);
-        var pageCount = (totalCount / COUNT_PAGE_ORDER) + ((totalCount % COUNT_PAGE_ORDER > 0) ? 1 : 0);
-        return pageCount == 0 ? 1 : pageCount;
     }
 }

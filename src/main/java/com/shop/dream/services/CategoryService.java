@@ -22,5 +22,4 @@ public interface CategoryService {
     boolean update(CategoryDTO dto, String imgName);
     List<ProductDTO> findProductsByCategoryName(String name, Pageable pageable);
     List<ProductDTO> findProductsByCategoryName(String name);
-    Category findByNameEssence(String name);
 }

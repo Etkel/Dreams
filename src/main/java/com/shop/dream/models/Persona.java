@@ -10,11 +10,9 @@ import java.util.List;
 
 @Entity
 @Builder
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Table(name = "Personas")
 public class Persona {
     @Id
@@ -45,7 +43,6 @@ public class Persona {
                 .cart(persona.cart)
                 .build();
     }
-
 
     @PostPersist
     private void cartCreation() {

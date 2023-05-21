@@ -12,7 +12,6 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByNameCategory(String name);
-    Category findByNameCategory(String name);
     @Query("SELECT p FROM Product p JOIN p.categories c WHERE c.nameCategory=:name")
     Page<Product> findProductsByCategoryName(@Param("name") String name, Pageable pageable);
     @Query("SELECT p FROM Product p JOIN p.categories c WHERE c.nameCategory=:name")

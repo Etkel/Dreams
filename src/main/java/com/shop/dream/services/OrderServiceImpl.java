@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Long Count() {
+    public Long count() {
         return orderRepository.count();
     }
 

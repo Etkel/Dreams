@@ -14,7 +14,7 @@ public interface OrderService {
     List<Order> findOrdersByEmail(String email, Pageable pageable);
     Long ordersCountByMail(String email);
     List<Order> findAll(Pageable pageable);
-    Long Count();
+    Long count();
     Long countUncheckedOrders();
     void updateOrderStatus(Long orderId, OrderStatus status);
     Long parsePostcode(String text);

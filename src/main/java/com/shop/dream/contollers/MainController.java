@@ -36,7 +36,7 @@ public class MainController {
         model.addAttribute("principal", principal);
         System.out.println(cartItemsService.findProductsWithMaxAmount());
         model.addAttribute("mvps", cartItemsService.findProductsWithMaxAmount());
-//Navigation
+        //Navigation
         List<CategoryDTO> categoryNav = categoryService.findAll();
         model.addAttribute("categoryNav", categoryNav);
         if (principal != null){
@@ -68,28 +68,30 @@ public class MainController {
         if (categoryName.equals("allproducts")) {
             List<ProductDTO> productsDTOS = productService.findAll(PageRequest.of(page, COUNT_PAGE_ALL));
             model.addAttribute("products", productsDTOS);
-            model.addAttribute("allPages", getPageCountAllProducts());
+            model.addAttribute("allPages", getPageCount(productService.count(), COUNT_PAGE_ALL));
         } else if (categoryService.existsByName(categoryName)) {
             List<ProductDTO> productsDTOS =
                     categoryService.findProductsByCategoryName(categoryName,
                             PageRequest.of(page, COUNT_PAGE_PRODUCTS, Sort.Direction.ASC, "id"));
             model.addAttribute("products", productsDTOS);
-            model.addAttribute("allPages", getPageCountCategory(categoryName));
+            model.addAttribute("allPages", getPageCount(
+                    categoryService.findProductsByCategoryName(categoryName).size(), COUNT_PAGE_PRODUCTS));
         } else {
             List<ProductDTO> productsDTOS = productService.searchProducts(categoryName,
                     PageRequest.of(page, COUNT_PAGE_ALL));
             model.addAttribute("products", productsDTOS);
-            model.addAttribute("allPages", getPageCountBySearch(categoryName));
+            model.addAttribute("allPages", getPageCount(productService.countSearchProduct(categoryName),
+                    COUNT_PAGE_ALL));
             model.addAttribute("categoryName", categoryName);
         }
-//Navigation
+        //Navigation
         List<CategoryDTO> categoryDTOS = categoryService.findAll();
         model.addAttribute("categoryNav", categoryDTOS);
         if (principal != null){
             model.addAttribute("cartSize", personaService.findCartSizeByEmail(principal.getName()));
         }
         model.addAttribute("uncheckedOrders", orderService.countUncheckedOrders());
-//pagination
+        //pagination
         model.addAttribute("currentCategory", categoryName);
         model.addAttribute("currentPage", page);
         return "index-cat";
@@ -116,7 +118,7 @@ public class MainController {
     @PostMapping("/user/profile")
     public String profile(PersonaDTO personaDTO, String rePassword, Principal principal) {
         if (!personaService.passCheck(personaDTO.getPassword())) {
-            return "redirect:/user/persona?short";
+            return "redirect:/user/profile?short";
         }
         if (!personaDTO.getPassword().equals(rePassword)) {
             return "redirect:/user/profile?wrong";
@@ -144,21 +146,24 @@ public class MainController {
         return "about";
     }
 
-    private long getPageCountCategory(String name) {
-        long totalCount = categoryService.findByNameEssence(name).getProductList().size();
-        var pageCount = (totalCount / COUNT_PAGE_PRODUCTS) + ((totalCount % COUNT_PAGE_PRODUCTS > 0) ? 1 : 0);
-        return pageCount == 0 ? 1 : pageCount;
+    @GetMapping("/product/{productId}")
+    public String productShow(@PathVariable Long productId, Model model, Principal principal) {
+        model.addAttribute("product", productService.findById(productId));
+        //Related products
+        model.addAttribute("relatedProducts", productService.getRandomProducts(productId));
+        //Navigation
+        List<CategoryDTO> categoryDTOS = categoryService.findAll();
+        model.addAttribute("categoryNav", categoryDTOS);
+        if (principal != null){
+            model.addAttribute("cartSize", personaService.findCartSizeByEmail(principal.getName()));
+        }
+        model.addAttribute("uncheckedOrders", orderService.countUncheckedOrders());
+        model.addAttribute("principal", principal);
+        return "product";
     }
 
-    private long getPageCountAllProducts() {
-        long totalCount = productService.count();
-        var pageCount = (totalCount / COUNT_PAGE_ALL) + ((totalCount % COUNT_PAGE_ALL > 0) ? 1 : 0);
-        return pageCount == 0 ? 1 : pageCount;
-    }
-
-    private long getPageCountBySearch(String name) {
-        long totalCount = productService.countSearchProduct(name);
-        var pageCount = (totalCount / COUNT_PAGE_ALL) + ((totalCount % COUNT_PAGE_ALL > 0) ? 1 : 0);
+    public static long getPageCount(long totalElements, Integer countOnPage) {
+        var pageCount = (totalElements / countOnPage) + ((totalElements % countOnPage > 0) ? 1 : 0);
         return pageCount == 0 ? 1 : pageCount;
     }
 }
