@@ -1,5 +1,7 @@
 package com.shop.dream.components;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +12,7 @@ import java.util.Properties;
 
 @Component
 public class EmailSender {
+    private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
     private static final String HOST = "smtp.gmail.com";
     @Value("${email}")
     private String username;
@@ -51,10 +54,10 @@ public class EmailSender {
 //            message.setContent(multipart);
             Transport.send(message);
 
-            System.out.println("Sent message successfully....");
+            logger.info("Sent message successfully....");
 
         } catch (MessagingException e) {
-            System.out.println("ERROR to send massage");
+            logger.error("Sent message successfully....");
             e.printStackTrace();
         }
     }
