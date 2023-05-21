@@ -1,7 +1,7 @@
 package com.shop.dream.components;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +11,8 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 @Component
+@Log4j2
 public class EmailSender {
-    private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
     private static final String HOST = "smtp.gmail.com";
     @Value("${email}")
     private String username;
@@ -54,10 +54,10 @@ public class EmailSender {
 //            message.setContent(multipart);
             Transport.send(message);
 
-            logger.info("Sent message successfully....");
+            log.info("Sent message successfully....");
 
         } catch (MessagingException e) {
-            logger.error("Sent message successfully....");
+            log.error("Sent message successfully....");
             e.printStackTrace();
         }
     }
