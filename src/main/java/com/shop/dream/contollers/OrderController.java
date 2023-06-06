@@ -112,10 +112,10 @@ public class OrderController {
     }
 
     @PostMapping("/admin/order/{orderId}")
-    public ResponseEntity<String> addItemToCart(@PathVariable Long orderId,
+    public String addItemToCart(@PathVariable Long orderId,
                                                 @RequestParam(name = "status")
                                                 OrderStatus status) {
         orderService.updateOrderStatus(orderId, status);
-        return ResponseEntity.ok().build();
+        return "redirect:/admin/orders";
     }
 }

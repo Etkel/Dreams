@@ -1,7 +1,67 @@
-# Dreams
+# Dream-shop
 
-Dream-shop is a full-featured online store with registration, add/delete/update products and categories, user and order management functions. The website displays detailed product descriptions and photos, helping users choose the right product. After placing an order, customers receive a notification via email. It's solo project. 
+<a src="https://dreamshopu.herokuapp.com">Dream-shop</a> is a full-featured online store with registration, add/delete/update products and categories, user and order management functions. The website displays detailed product descriptions and photos, helping users choose the right product. After placing an order, customers receive a notification via email. The popular products on the homepage change depending on their quantity in orders. 
 
-MVC, REST, Spring Boot, Spring Security, Spring Data, Spring IoC, Spring Web, Thymeleaf, GCP Storage, Bootstrap, SQL, Log4j, JavaMail, CSS, JS, FlyWay, Docker
+## :gear: Tech Stack
 
-How it works: https://dreamshopu.herokuapp.com/about
++ Spring Boot
++ Spring MVC
++ Spring IoC
++ Spring Data
++ Spring Web
++ Spring Security
++ MySQL (PostgreSQL for Deploying)
++ JPA/Hibernate
++ Log4j
++ HTML/CSS/Thymeleaf
++ JS/JQuery
++ Bootstrap 5.3
++ Docker
++ Flyway
++ Maven
+
+## :sparkles: Used APIs
+
++ GCP Storage  
++ JavaMail
+
+Most of the web application follows a standard approach to development. However, in order to enhance the user-friendly experience, REST API was utilized.
+
+## :joystick: User features
+
+So, the user needs to register first to work with the store. The following domains are supported: 
++ "gmail.com" 
++ "yahoo.com" 
++ "outlook.com" 
++ "hotmail.com" 
++ "aol.com" 
++ "icloud.com" 
++ "mail.com" 
++ "protonmail.com" 
++ "gmx.com" 
++ "ukr.net" 
++ "mail.ua" 
++ "i.ua" 
++ "meta.ua" 
++ "ex.ua"
+
+After that, the user can select items to add to their shopping cart, and they will also have options to view their orders and access personal settings to modify their profile.
+
+<i>All passwords are encrypted using Bcrypt and stored in that form in the database. So, nobody else except for you has access to your password, even if the database is hacked.</i>
+
+## :joystick: Admin features
+So, the admin has the following capabilities:
+
+1. Creation, modification, and deletion of categories and products.
+
+2. Viewing both all orders and the products of a specific user.
+
+3. Creation of new users, deletion, and the ability to ban users.
+
+4. All capabilities of a regular user.
+
+5. Ability to send mass emails.
+
+<i>When new orders appear, there is a counter for unprocessed orders (all orders with the status "CREATED"). To process an order it is necessary to change the status to any other. Additionally, all new orders will be highlighted in the Admin :arrow_right: Orders panel.</i>
+
+# Screenshots
