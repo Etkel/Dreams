@@ -1,6 +1,6 @@
 # Dream-shop
 
-[Dream-shop](https://dreamshopu.herokuapp.com)> is a full-featured online store with registration, add/delete/update products and categories, user and order management functions. The website displays detailed product descriptions and photos, helping users choose the right product. After placing an order, customers receive a notification via email. The popular products on the homepage change depending on their quantity in orders. 
+[Dream-shop](https://dreamshopu.herokuapp.com) is a full-featured online store with registration, add/delete/update products and categories, user and order management functions. The website displays detailed product descriptions and photos, helping users choose the right product. After placing an order, customers receive a notification via email. The popular products on the homepage change depending on their quantity in orders. 
 
 ## :gear: Tech Stack
 
