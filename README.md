@@ -64,7 +64,7 @@ So, the admin has the following capabilities:
 
 <i>When new orders appear, there is a counter for unprocessed orders (all orders with the status "CREATED"). To process an order it is necessary to change the status to any other. Additionally, all new orders will be highlighted in the Admin :arrow_right: Orders panel.</i>
 
-# Screenshots
+## Screenshots
 
 ![](https://raw.githubusercontent.com/Etkel/Pictures/main/2.PNG)
 
