@@ -34,7 +34,6 @@ public class MainController {
         List<CategoryDTO> categoryDTOS = categoryService.findAll();
         model.addAttribute("categories", categoryDTOS);
         model.addAttribute("principal", principal);
-        System.out.println(cartItemsService.findProductsWithMaxAmount());
         model.addAttribute("mvps", cartItemsService.findProductsWithMaxAmount());
         //Navigation
         List<CategoryDTO> categoryNav = categoryService.findAll();
